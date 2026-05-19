@@ -8,14 +8,14 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    # GPU support — comment out the 'deploy' block if no NVIDIA GPU available
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    # GPU support — uncomment the block below if you have an NVIDIA GPU with nvidia-container-toolkit
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
 
   market-api:
     build: ./market-api

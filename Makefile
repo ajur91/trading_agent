@@ -7,11 +7,19 @@ setup:
 	@echo ""
 	@echo "Edit .env with your OKX credentials, then run: make pull-model && make up"
 
-# Pull the LLM model into Ollama (run once before first start)
+# Pull the LLM model into Ollama
+# Ollama must already be running: make ollama-up first, then make pull-model
 pull-model:
 	@MODEL=$$(grep LLM_MODEL .env | cut -d= -f2 | tr -d '[:space:]'); \
 	echo "Pulling model: $$MODEL"; \
-	docker compose run --rm ollama ollama pull $$MODEL
+	docker compose exec ollama ollama pull $$MODEL
+
+# Start only Ollama (needed before pull-model on first run)
+ollama-up:
+	docker compose up -d ollama
+	@echo "Waiting for Ollama to be ready..."
+	@sleep 5
+	@echo "Ollama is up. Now run: make pull-model"
 
 # Build all images
 build:
