@@ -235,8 +235,29 @@ func (s *Server) handlePlaceOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate risk parameters
+	// Validate direction-aware risk parameters
 	price := toFloat(ticker.Last)
+
+	if req.Direction == "long" {
+		if req.SLPrice >= price {
+			writeError(w, 400, fmt.Sprintf("LONG sl_price (%.4f) must be below current price (%.4f)", req.SLPrice, price))
+			return
+		}
+		if req.TPPrice <= price {
+			writeError(w, 400, fmt.Sprintf("LONG tp_price (%.4f) must be above current price (%.4f)", req.TPPrice, price))
+			return
+		}
+	} else {
+		if req.SLPrice <= price {
+			writeError(w, 400, fmt.Sprintf("SHORT sl_price (%.4f) must be above current price (%.4f)", req.SLPrice, price))
+			return
+		}
+		if req.TPPrice >= price {
+			writeError(w, 400, fmt.Sprintf("SHORT tp_price (%.4f) must be below current price (%.4f)", req.TPPrice, price))
+			return
+		}
+	}
+
 	slDist := math.Abs(price-req.SLPrice) / price
 	if slDist < 0.003 {
 		writeError(w, 400, "sl_price too close to current price (min 0.3% distance)")
@@ -245,7 +266,7 @@ func (s *Server) handlePlaceOrder(w http.ResponseWriter, r *http.Request) {
 
 	tpDist := math.Abs(req.TPPrice-price) / price
 	if tpDist < slDist*2 {
-		writeError(w, 400, "tp_price does not achieve minimum 2:1 RR")
+		writeError(w, 400, fmt.Sprintf("tp_price does not achieve minimum 2:1 RR (sl_dist=%.2f%%, tp_dist=%.2f%%)", slDist*100, tpDist*100))
 		return
 	}
 
