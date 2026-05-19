@@ -14,7 +14,8 @@ func main() {
 	log := logrus.New()
 	log.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
 
-	godotenv.Load("/app/.env")
+	// Try local .env first (dev), then Docker path
+	godotenv.Load(".env", "/app/.env")
 
 	cfg := &okx.Config{
 		APIKey:     mustEnv("OKX_API_KEY"),
