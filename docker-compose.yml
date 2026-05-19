@@ -1,0 +1,59 @@
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: trading-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    # GPU support — comment out the 'deploy' block if no NVIDIA GPU available
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  market-api:
+    build: ./market-api
+    container_name: trading-market-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./.env:/app/.env:ro
+    environment:
+      - API_ADDR=:8080
+      - LEVERAGE=${LEVERAGE:-3}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  agent:
+    build: ./agent
+    container_name: trading-agent
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./agent/prompts:/app/prompts:ro
+      - agent_data:/app/data
+    environment:
+      - MARKET_API_URL=http://market-api:8080
+      - OLLAMA_BASE_URL=http://ollama:11434/v1
+      - LLM_MODEL=${LLM_MODEL:-qwen2.5:14b}
+      - CYCLE_INTERVAL_MINUTES=${CYCLE_INTERVAL_MINUTES:-30}
+      - DRY_RUN=${DRY_RUN:-true}
+      - DB_PATH=/app/data/agent.db
+      - SYMBOLS=${SYMBOLS:-BTC-USDT-SWAP,ETH-USDT-SWAP,SOL-USDT-SWAP,BNB-USDT-SWAP}
+    depends_on:
+      market-api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+  agent_data:

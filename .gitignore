@@ -1,0 +1,23 @@
+# Environment — NEVER commit credentials
+.env
+*.env
+
+# Go build artifacts
+market-api/trading-agent
+market-api/market-api
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Agent database (contains trade history, not source code)
+data/
+*.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
