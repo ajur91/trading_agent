@@ -29,10 +29,11 @@ services:
       - LEVERAGE=${LEVERAGE:-3}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:${API_PORT:-8080}/health"]
-      interval: 30s
+      test: ["CMD-SHELL", "wget -qO- http://localhost${API_ADDR}/health"]
+      interval: 15s
       timeout: 10s
-      retries: 5
+      retries: 8
+      start_period: 10s
 
   agent:
     build: ./agent
