@@ -28,13 +28,13 @@ func NewServer(client *okx.Client, log *logrus.Logger, leverage int) *Server {
 }
 
 func (s *Server) routes() {
-	s.mux.HandleFunc("GET /health", s.handleHealth)
-	s.mux.HandleFunc("GET /v1/market/candles", s.handleCandles)
-	s.mux.HandleFunc("GET /v1/market/indicators", s.handleIndicators)
-	s.mux.HandleFunc("GET /v1/account/balance", s.handleBalance)
-	s.mux.HandleFunc("GET /v1/account/positions", s.handlePositions)
-	s.mux.HandleFunc("POST /v1/orders/place", s.handlePlaceOrder)
-	s.mux.HandleFunc("POST /v1/orders/close", s.handleCloseOrder)
+	s.mux.HandleFunc("/health", s.handleHealth)
+	s.mux.HandleFunc("/v1/market/candles", s.handleCandles)
+	s.mux.HandleFunc("/v1/market/indicators", s.handleIndicators)
+	s.mux.HandleFunc("/v1/account/balance", s.handleBalance)
+	s.mux.HandleFunc("/v1/account/positions", s.handlePositions)
+	s.mux.HandleFunc("/v1/orders/place", s.handlePlaceOrder)
+	s.mux.HandleFunc("/v1/orders/close", s.handleCloseOrder)
 }
 
 func (s *Server) Start(addr string) error {
