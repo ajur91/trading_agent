@@ -15,7 +15,11 @@ TOOLS = [
                     "symbol": {
                         "type": "string",
                         "description": "Par a operar. Ejemplo: BTC-USDT-SWAP",
-                        "enum": ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP"],
+                        "enum": [
+                            "BTC-USDT-SWAP", "ETH-USDT-SWAP", "BNB-USDT-SWAP", "SOL-USDT-SWAP",
+                            "XRP-USDT-SWAP", "DOGE-USDT-SWAP", "ADA-USDT-SWAP",
+                            "AVAX-USDT-SWAP", "TRX-USDT-SWAP", "TON-USDT-SWAP",
+                        ],
                     },
                     "direction": {
                         "type": "string",

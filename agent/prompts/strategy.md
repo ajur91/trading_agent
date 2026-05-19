@@ -1,10 +1,16 @@
 # Estrategia: HTF Trend v1
 
-## Universo de pares autorizados
+## Universo de pares autorizados (Top 10 por market cap)
 - BTC-USDT-SWAP
 - ETH-USDT-SWAP
-- SOL-USDT-SWAP
 - BNB-USDT-SWAP
+- SOL-USDT-SWAP
+- XRP-USDT-SWAP
+- DOGE-USDT-SWAP
+- ADA-USDT-SWAP
+- AVAX-USDT-SWAP
+- TRX-USDT-SWAP
+- TON-USDT-SWAP
 
 ## Parámetros de riesgo
 - **Apalancamiento:** 3× (configurado en el servidor, no ajustable aquí)
