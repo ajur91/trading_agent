@@ -21,15 +21,15 @@ services:
     build: ./market-api
     container_name: trading-market-api
     ports:
-      - "8080:8080"
+      - "${API_PORT:-8080}:${API_PORT:-8080}"
     volumes:
       - ./.env:/app/.env:ro
     environment:
-      - API_ADDR=:8080
+      - API_ADDR=:${API_PORT:-8080}
       - LEVERAGE=${LEVERAGE:-3}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${API_PORT:-8080}/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -42,7 +42,7 @@ services:
       - ./agent/prompts:/app/prompts:ro
       - agent_data:/app/data
     environment:
-      - MARKET_API_URL=http://market-api:8080
+      - MARKET_API_URL=http://market-api:${API_PORT:-8080}
       - OLLAMA_BASE_URL=http://ollama:11434/v1
       - LLM_MODEL=${LLM_MODEL:-qwen2.5:14b}
       - CYCLE_INTERVAL_MINUTES=${CYCLE_INTERVAL_MINUTES:-30}
